@@ -7,6 +7,7 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Repositories\Interfaces\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

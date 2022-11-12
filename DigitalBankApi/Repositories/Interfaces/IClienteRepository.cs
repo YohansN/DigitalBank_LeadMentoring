@@ -12,5 +12,6 @@ namespace DigitalBankApi.Repositories.Interfaces
         Task Update(Cliente cliente);
         Task Delete(int id);
         Task<bool> IdExists(int id);
+        Task<bool> CpfExists(string cpf);
     }
 }
