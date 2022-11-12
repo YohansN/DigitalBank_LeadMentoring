@@ -15,18 +15,10 @@ namespace DigitalBankApi.Repositories
             _context = context;
         }
 
-        public async Task<List<Cliente>> GetAll()
-        {
-            var getAllCliente = await _context.Cliente.ToListAsync();
-            return getAllCliente;
-        }
-
-        public async Task<Cliente> GetById(int id)
-        {
-            var getByIdCliente = await _context.Cliente.FirstOrDefaultAsync(c => c.IdCliente == id);
-            return getByIdCliente;
-        }
-
+        public async Task<List<Cliente>> GetAll() => await _context.Cliente.ToListAsync();
+        
+        public async Task<Cliente> GetById(int id) => await _context.Cliente.FirstOrDefaultAsync(c => c.IdCliente == id);
+        
         public async Task Add(Cliente cliente)
         {
             await _context.Cliente.AddAsync(cliente);
@@ -41,22 +33,13 @@ namespace DigitalBankApi.Repositories
 
         public async Task Delete(int id)
         {
-            var getByIdCliente = await GetById(id);
-            _context.Cliente.Remove(getByIdCliente);
+            _context.Cliente.Remove(await GetById(id));
             await _context.SaveChangesAsync();
         }
 
         //Métodos de checagem no banco.
-        public async Task<bool> IdExists(int id)
-        {
-            var exists = await _context.Cliente.AnyAsync(c => c.IdCliente == id);
-            return exists;
-        }
-
-        public async Task<bool> CpfExists(string cpf)
-        {
-            var cpfExists = await _context.Cliente.AnyAsync(c => c.Cpf == cpf);
-            return cpfExists;
-        }
+        public async Task<bool> IdExists(int id) => await _context.Cliente.AnyAsync(c => c.IdCliente == id);
+        
+        public async Task<bool> CpfExists(string cpf) => await _context.Cliente.AnyAsync(c => c.Cpf == cpf);
     }
 }
