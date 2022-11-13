@@ -40,6 +40,8 @@ namespace DigitalBankApi.Repositories
         //Métodos de checagem no banco.
         public async Task<bool> IdExists(int id) => await _context.Cliente.AnyAsync(c => c.IdCliente == id);
         
-        public async Task<bool> CpfExists(string cpf) => await _context.Cliente.AnyAsync(c => c.Cpf == cpf);
+        public async Task<bool> CpfExists(string cpf) => await _context.Cliente.AsNoTracking().AnyAsync(c => c.Cpf == cpf);
+
+        public async Task<Cliente> GetByCpf(string cpf) => await _context.Cliente.AsNoTracking().FirstOrDefaultAsync(c => c.Cpf == cpf);
     }
 }

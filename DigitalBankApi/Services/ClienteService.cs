@@ -43,18 +43,40 @@ namespace DigitalBankApi.Services
 
         public async Task<bool> Update(Cliente cliente)
         {
-            var cpfExists = await _clienteRepository.CpfExists(cliente.Cpf);
             var idExists = await _clienteRepository.IdExists(cliente.IdCliente);
-            //Verificacao : Caso falha - Idade menor que 18; Id inexistente; Cpf já em uso (existente).
-            if (cliente.Idade < 18 || !(idExists) || cpfExists)
-                return false;
-            await _clienteRepository.Update(cliente);
-            return true;
+            var cpfExists = await _clienteRepository.CpfExists(cliente.Cpf);
+
+            if (idExists)
+            {
+                if (cpfExists) //Cpf já existe:
+                {
+                    var clienteByCpf = await _clienteRepository.GetByCpf(cliente.Cpf);
+                    if (clienteByCpf.IdCliente == cliente.IdCliente) //O Cpf existente é do mesmo cliente.
+                    {
+                        //Destruir instancia de clienteByCpf aqui.
+                        
+                        if (cliente.Idade >= 18)
+                        {
+                            await _clienteRepository.Update(cliente);
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                //cpf ainda não existe:
+                if (cliente.Idade >= 18)
+                {
+                    await _clienteRepository.Update(cliente);
+                    return true;
+                }
+                 return false;
+            }
+            return false;
         }
 
         public async Task<bool> Delete(int id)
         {
-            //Verifica se o id existe.
             if(await _clienteRepository.IdExists(id))
             {
                 await _clienteRepository.Delete(id);
