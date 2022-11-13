@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DigitalBankApi.Models
 {
     public class Transacao
     {
+        [Key]
         public int IdTransacao { get; set; }
         public int NumeroConta { get; set; }
         public Enum TipoTransacao { get; set; }

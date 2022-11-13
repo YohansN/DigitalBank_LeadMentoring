@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalBankApi.Data;
+using DigitalBankApi.Repositories;
+using DigitalBankApi.Repositories.Interfaces;
+using DigitalBankApi.Services;
+using DigitalBankApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +32,9 @@ namespace DigitalBankApi
         {
             services.AddControllers();
             services.AddDbContext<Context>();
+
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IClienteService, ClienteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
