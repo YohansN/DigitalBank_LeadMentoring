@@ -7,7 +7,8 @@ namespace DigitalBankApi.Repositories.Interfaces
     public interface IContaBancariaRepository
     {
         Task<List<ContaBancaria>> GetAll();
-        Task<Cliente> GetByCpf(string cpf);
+        Task<ContaBancaria> GetByNumeroConta(int numeroConta);
+        Task<ContaBancaria> GetByClienteId(int id);
         Task Add(ContaBancaria contaBancaria);
         Task Deposito(ContaBancaria contaBancaria);
         Task Debito(ContaBancaria contaBancaria);

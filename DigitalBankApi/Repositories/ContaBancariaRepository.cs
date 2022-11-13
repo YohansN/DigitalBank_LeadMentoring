@@ -17,9 +17,10 @@ namespace DigitalBankApi.Repositories
 
         public async Task<List<ContaBancaria>> GetAll() => await _context.ContaBancaria.ToListAsync();
 
-        //GetByCpf -> Pego objeto CLIENTE pelo CPF e verificar se o cliente.IdCliente tem alguma conta em ContaBancaria.IdCliente.
-        public async Task<Cliente> GetByCpf(string cpf) => await _context.Cliente.FirstOrDefaultAsync(c => c.Cpf == cpf);
-        
+        public async Task<ContaBancaria> GetByNumeroConta(int numeroConta) => await _context.ContaBancaria.FirstOrDefaultAsync(b => b.NumeroConta == numeroConta);
+
+        public async Task<ContaBancaria> GetByClienteId(int id) => await _context.ContaBancaria.FirstOrDefaultAsync(b => b.IdCliente == id);
+
         public async Task Add(ContaBancaria contaBancaria)
         {
             await _context.ContaBancaria.AddAsync(contaBancaria);

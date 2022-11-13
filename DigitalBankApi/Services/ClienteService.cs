@@ -53,8 +53,6 @@ namespace DigitalBankApi.Services
                     var clienteByCpf = await _clienteRepository.GetByCpf(cliente.Cpf);
                     if (clienteByCpf.IdCliente == cliente.IdCliente) //O Cpf existente é do mesmo cliente.
                     {
-                        //Destruir instancia de clienteByCpf aqui.
-                        
                         if (cliente.Idade >= 18)
                         {
                             await _clienteRepository.Update(cliente);
