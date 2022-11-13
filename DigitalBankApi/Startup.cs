@@ -35,6 +35,9 @@ namespace DigitalBankApi
 
             services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
+            services.AddScoped<IContaBancariaService, ContaBancariaService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

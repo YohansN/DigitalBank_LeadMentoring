@@ -1,11 +1,12 @@
 ﻿using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
+using DigitalBankApi.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigitalBankApi.Services
 {
-    public class ContaBancariaService
+    public class ContaBancariaService : IContaBancariaService
     {
         private readonly IContaBancariaRepository _contaBancariaRepository;
         private readonly IClienteRepository _clienteRepository;
