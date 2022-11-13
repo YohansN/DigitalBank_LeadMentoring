@@ -8,7 +8,13 @@ namespace DigitalBankApi.Models
         [Key]
         public int IdTransacao { get; set; }
         public int NumeroConta { get; set; }
-        public Enum TipoTransacao { get; set; }
+        public enum TipoTransacao
+        {
+            Debito = 1,
+            Deposito = 2,
+            Transferencia_Enviada = 3,
+            Transferencia_Recebida = 4
+        }
         public decimal ValorTransacao { get; set; }
         public DateTime DataTransacao { get; set; }
     }
