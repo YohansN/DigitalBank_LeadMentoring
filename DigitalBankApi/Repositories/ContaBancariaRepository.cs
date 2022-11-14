@@ -17,9 +17,9 @@ namespace DigitalBankApi.Repositories
 
         public async Task<List<ContaBancaria>> GetAll() => await _context.ContaBancaria.ToListAsync();
 
-        public async Task<ContaBancaria> GetByNumeroConta(int numeroConta) => await _context.ContaBancaria.FirstOrDefaultAsync(b => b.NumeroConta == numeroConta);
+        public async Task<ContaBancaria> GetByNumeroConta(int numeroConta)=> await _context.ContaBancaria.AsNoTracking().FirstOrDefaultAsync(b => b.NumeroConta == numeroConta);
 
-        public async Task<ContaBancaria> GetByClienteId(int id) => await _context.ContaBancaria.FirstOrDefaultAsync(b => b.IdCliente == id);
+        public async Task<ContaBancaria> GetByClienteId(int id) => await _context.ContaBancaria.AsNoTracking().FirstOrDefaultAsync(b => b.IdCliente == id);
 
         public async Task Add(ContaBancaria contaBancaria)
         {

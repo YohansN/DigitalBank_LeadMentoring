@@ -41,6 +41,7 @@ namespace DigitalBankApi.Services
             - Numero conta não pode existir previamente.
             - IdCliente tem que existir. (Um cliente so pode ter uma conta bancaria e vice versa)
             - Saldo nao pode ser negativo.
+            - Uma cliente so pode estar vinculado a UMA conta bancaria.
              */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
             var clienteExists = await _clienteRepository.GetById(contaBancaria.IdCliente);
@@ -59,9 +60,10 @@ namespace DigitalBankApi.Services
             - O saldo não pode ser menor que o saldo previamente existente.
             */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            var contaBancariaA = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
-            if (contaBancariaExists != null && contaBancariaA.IdCliente == contaBancaria.IdCliente && contaBancariaA.Saldo < contaBancaria.Saldo)
+            var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
+            if (contaBancariaExists != null && contaBancariaInDb.IdCliente == contaBancaria.IdCliente)
             {
+                contaBancaria.Saldo = contaBancariaInDb.Saldo + contaBancaria.Saldo; 
                 await _contaBancariaRepository.Deposito(contaBancaria);
                 return true;
             }
@@ -76,11 +78,17 @@ namespace DigitalBankApi.Services
             - O saldo não pode ser maior que o saldo previamente existente.
             */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            var contaBancariaA = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
-            if (contaBancariaExists != null && contaBancariaA.IdCliente == contaBancaria.IdCliente && contaBancariaA.Saldo > contaBancaria.Saldo)
+            var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
+            if (contaBancariaExists != null && contaBancariaInDb.IdCliente == contaBancaria.IdCliente)
             {
-                await _contaBancariaRepository.Debito(contaBancaria);
-                return true;
+                //Verifica se o valor a ser retirado é menor que o valor em conta.
+                if(contaBancaria.Saldo <= contaBancariaInDb.Saldo)
+                {
+                    contaBancaria.Saldo = contaBancariaInDb.Saldo - contaBancaria.Saldo;
+                    await _contaBancariaRepository.Debito(contaBancaria);
+                    return true;
+                }
+                return false;
             }
             return false;
         }

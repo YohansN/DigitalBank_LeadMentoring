@@ -31,7 +31,7 @@ namespace DigitalBankApi.Controllers
             if (string.IsNullOrEmpty(cpf))
                 return BadRequest("O cpf não pode ser nulo ou vazio");
 
-            var contaBancaria = _contaBancariaService.GetByCpf(cpf);
+            var contaBancaria = await _contaBancariaService.GetByCpf(cpf);
             if (contaBancaria != null)
                 return Ok(contaBancaria);
             return NotFound("A conta bancaria vinculada a esse Cpf não existe.");
@@ -53,7 +53,7 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Falha ao cadastrar conta.");
         }
 
-        [HttpPut]
+        [HttpPut("deposito")]
         public async Task<IActionResult> Deposito(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
@@ -61,7 +61,7 @@ namespace DigitalBankApi.Controllers
             else if (contaBancaria.NumeroConta <= 0)
                 return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO valor depositado não pode ser negativo ou zero.");
+                return BadRequest("Deposito inpossibilitado.\nO valor a ser depositado não pode ser negativo ou zero.");
             
             var depositoWasMade = await _contaBancariaService.Deposito(contaBancaria);
             if (depositoWasMade)
@@ -69,17 +69,17 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Houve um erro ao depositar.");
         }
 
-        [HttpPut]
+        [HttpPut("debito")]
         public async Task<IActionResult> Debito(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO Id é invalido.\nApenas Id's positivos e maiores que zero são validos.");
+                return BadRequest("Debito inpossibilitado.\nO Id é invalido.\nApenas Id's positivos e maiores que zero são validos.");
             else if (contaBancaria.NumeroConta <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
+                return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO valor depositado não pode ser negativo ou zero.");
+                return BadRequest("Debito inpossibilitado.\nO valor a ser debitado não pode ser negativo ou zero.");
 
-            var debitoWasMade = await _contaBancariaService.Deposito(contaBancaria);
+            var debitoWasMade = await _contaBancariaService.Debito(contaBancaria);
             if (debitoWasMade)
                 return Ok(debitoWasMade);
             return BadRequest("Houve um erro ao depositar.");
