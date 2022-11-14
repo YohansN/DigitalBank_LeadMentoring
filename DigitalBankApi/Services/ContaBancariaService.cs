@@ -62,15 +62,19 @@ namespace DigitalBankApi.Services
         {
             /*
             - O numero da conta tem que existir, o dinheiro vai pra ela.
-            - O IdCliente não pode ser modificado.
+            - Verificar se o IdCliente passado existe tambem.
+            - Caso exista, o IdCliente não pode ser modificado, ou seja tem que ser igual ao que esta no banco de dados.
             - O numero da conta tem que estar atrelado ao IdCliente.
             - O saldo não pode ser menor que o saldo previamente existente.
             */
-            var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
-            if (contaBancariaExists != null && contaBancariaInDb.IdCliente == contaBancaria.IdCliente)
+            var contaBancariaExists = await _contaBancariaRepository.IdExists(contaBancaria.NumeroConta);
+            if(await _contaBancariaRepository.IdExists(contaBancaria.IdCliente) && contaBancariaExists)
             {
-                contaBancaria.Saldo = contaBancariaInDb.Saldo + contaBancaria.Saldo; 
+                var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
+                if (contaBancariaExists == false || contaBancariaInDb.NumeroConta != contaBancaria.NumeroConta || contaBancariaInDb.IdCliente != contaBancaria.IdCliente)
+                    return false;
+
+                contaBancaria.Saldo = contaBancariaInDb.Saldo + contaBancaria.Saldo;
                 await _contaBancariaRepository.Deposito(contaBancaria);
                 return true;
             }
@@ -81,15 +85,22 @@ namespace DigitalBankApi.Services
         {
             /*
             - O numero da conta tem que existir, o dinheiro vai pra ela.
-            - O IdCliente não pode ser modificado.
+            - Se a conta existe o Cliente também mas devemos verificar 
+            - Verificar se o IdCliente passado existe tambem.
+            - Caso exista, o IdCliente não pode ser modificado, ou seja tem que ser igual ao que esta no banco de dados.
+            - O numero da conta tem que estar atrelado ao IdCliente.
             - O saldo não pode ser maior que o saldo previamente existente.
             */
-            var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
-            if (contaBancariaExists != null && contaBancariaInDb.IdCliente == contaBancaria.IdCliente)
+            var contaBancariaExists = await _contaBancariaRepository.IdExists(contaBancaria.NumeroConta);
+            
+            if (await _contaBancariaRepository.IdExists(contaBancaria.IdCliente) && contaBancariaExists)
             {
+                var contaBancariaInDb = await _contaBancariaRepository.GetByClienteId(contaBancaria.IdCliente);
+                if (contaBancariaExists != true || contaBancariaInDb.NumeroConta != contaBancaria.NumeroConta || contaBancariaInDb.IdCliente != contaBancaria.IdCliente)
+                    return false;
+
                 //Verifica se o valor a ser retirado é menor que o valor em conta.
-                if(contaBancaria.Saldo <= contaBancariaInDb.Saldo)
+                if (contaBancaria.Saldo <= contaBancariaInDb.Saldo)
                 {
                     contaBancaria.Saldo = contaBancariaInDb.Saldo - contaBancaria.Saldo;
                     await _contaBancariaRepository.Debito(contaBancaria);
@@ -97,7 +108,7 @@ namespace DigitalBankApi.Services
                 }
                 return false;
             }
-            return false;
+            return false;   
         }
 
     }
