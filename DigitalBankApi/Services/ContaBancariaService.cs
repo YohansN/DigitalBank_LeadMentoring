@@ -44,12 +44,18 @@ namespace DigitalBankApi.Services
             - Uma cliente so pode estar vinculado a UMA conta bancaria.
              */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            var clienteExists = await _clienteRepository.GetById(contaBancaria.IdCliente);
-            if (contaBancariaExists != null || clienteExists == null || contaBancaria.Saldo < 0)
-                return false;
-
-            await _contaBancariaRepository.Add(contaBancaria);
-            return true;
+            //var clienteExists = await _clienteRepository.GetById(contaBancaria.IdCliente);
+            var clienteExists = await _clienteRepository.IdExists(contaBancaria.IdCliente);
+            if (contaBancariaExists == null && clienteExists == true && contaBancaria.Saldo > 0)
+            {
+                //Verifica se aquela conta já está atrelada a algum cliente:
+                var contaBancariaAlreadExists = await _contaBancariaRepository.IdExists(contaBancaria.IdCliente);
+                if (contaBancariaAlreadExists)
+                    return false;
+                await _contaBancariaRepository.Add(contaBancaria);
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> Deposito(ContaBancaria contaBancaria)
@@ -57,6 +63,7 @@ namespace DigitalBankApi.Services
             /*
             - O numero da conta tem que existir, o dinheiro vai pra ela.
             - O IdCliente não pode ser modificado.
+            - O numero da conta tem que estar atrelado ao IdCliente.
             - O saldo não pode ser menor que o saldo previamente existente.
             */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
