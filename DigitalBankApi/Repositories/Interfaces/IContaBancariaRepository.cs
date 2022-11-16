@@ -10,9 +10,11 @@ namespace DigitalBankApi.Repositories.Interfaces
         Task<ContaBancaria> GetByNumeroConta(int numeroConta);
         Task<ContaBancaria> GetByClienteId(int id);
         Task Add(ContaBancaria contaBancaria);
+        Task Delete(ContaBancaria contaBancaria);
         Task Deposito(ContaBancaria contaBancaria);
         Task Debito(ContaBancaria contaBancaria);
         Task Transferencia(ContaBancaria contaBancaria);
         Task<bool> IdExists(int id);
+        Task<bool> NumeroContaExists(int numeroConta);
     }
 }

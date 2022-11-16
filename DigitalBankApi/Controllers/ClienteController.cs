@@ -76,7 +76,7 @@ namespace DigitalBankApi.Controllers
             var deleteCliente = await _clienteService.Delete(id);
             if (deleteCliente)
                 return Ok();
-            return BadRequest("Falha ao deletear cliente:\n - Cliente inexistente.");
+            return BadRequest("Falha ao deletar cliente:\n - Cliente inexistente.");
         }
     }
 }

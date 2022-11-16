@@ -26,7 +26,13 @@ namespace DigitalBankApi.Repositories
             await _context.ContaBancaria.AddAsync(contaBancaria);
             await _context.SaveChangesAsync();
         }
-        
+
+        public async Task Delete(ContaBancaria contaBancaria)
+        {
+            _context.ContaBancaria.Remove(contaBancaria);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task Deposito(ContaBancaria contaBancaria)
         {
             _context.ContaBancaria.Update(contaBancaria);
@@ -48,5 +54,6 @@ namespace DigitalBankApi.Repositories
 
         //Métodos de checagem no banco.
         public async Task<bool> IdExists(int id) => await _context.ContaBancaria.AnyAsync(b => b.IdCliente == id);
+        public async Task<bool> NumeroContaExists(int numeroConta) => await _context.ContaBancaria.AnyAsync(b => b.NumeroConta == numeroConta);
     }
 }

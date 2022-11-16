@@ -58,6 +58,17 @@ namespace DigitalBankApi.Services
             return false;
         }
 
+        public async Task<bool> Delete(int numeroConta)
+        {
+            if(await _contaBancariaRepository.NumeroContaExists(numeroConta))
+            {
+                var contaBancariaToDelete = await _contaBancariaRepository.GetByNumeroConta(numeroConta);
+                await _contaBancariaRepository.Delete(contaBancariaToDelete);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> Deposito(ContaBancaria contaBancaria)
         {
             /*

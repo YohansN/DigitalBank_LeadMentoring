@@ -41,11 +41,11 @@ namespace DigitalBankApi.Controllers
         public async Task<IActionResult> Add(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Cadastro impossibilitado.\nO Id é invalido.\nApenas Id's positivos e maiores que zero são validos.");
+                return BadRequest("Cadastro impossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
             else if (contaBancaria.NumeroConta <= 0)
-                return BadRequest("Cadastro impossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
+                return BadRequest("Cadastro impossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
-                return BadRequest("Cadastro impossibilitado.\nSaldo invalido.\nO saldo inicial da conta deve ser positivo diferente de zero.");
+                return BadRequest("Cadastro impossibilitado.\nSaldo inválido.\nO saldo inicial da conta deve ser positivo diferente de zero.");
 
                 var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancaria);
             if (contaBancariaIsCreated)
@@ -53,13 +53,25 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Falha ao cadastrar conta.");
         }
 
+        [HttpDelete("{NumeroConta}")]
+        public async Task<IActionResult> Delete(int numeroConta)
+        {
+            if (numeroConta <= 0)
+                return BadRequest("Apagamento de conta impossibilitado.\nO id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
+
+            var contaBancariaIsDeleted = await _contaBancariaService.Delete(numeroConta);
+            if (contaBancariaIsDeleted)
+                return Ok();
+            return NotFound("Não existe Conta Bancária com esse número.");
+        }
+
         [HttpPut("deposito")]
         public async Task<IActionResult> Deposito(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO Id é invalido.\nApenas Id's positivos e maiores que zero são validos.");
+                return BadRequest("Deposito inpossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
             else if (contaBancaria.NumeroConta <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
+                return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
                 return BadRequest("Deposito inpossibilitado.\nO valor a ser depositado não pode ser negativo ou zero.");
             
@@ -73,9 +85,9 @@ namespace DigitalBankApi.Controllers
         public async Task<IActionResult> Debito(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Debito inpossibilitado.\nO Id é invalido.\nApenas Id's positivos e maiores que zero são validos.");
+                return BadRequest("Debito inpossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
             else if (contaBancaria.NumeroConta <= 0)
-                return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é invalido.\nApenas numeros positivos e maiores que zero são validos.");
+                return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
                 return BadRequest("Debito inpossibilitado.\nO valor a ser debitado não pode ser negativo ou zero.");
 
