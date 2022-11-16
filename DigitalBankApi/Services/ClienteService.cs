@@ -9,9 +9,11 @@ namespace DigitalBankApi.Services
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _clienteRepository;
-        public ClienteService(IClienteRepository clienteRepository)
+        private readonly IContaBancariaRepository _contaBancariaRepository;
+        public ClienteService(IClienteRepository clienteRepository, IContaBancariaRepository contaBancariaRepository)
         {
             _clienteRepository = clienteRepository;
+            _contaBancariaRepository = contaBancariaRepository;
         }
         /* REGRAS
          * No Add a idade tem que ser igual ou maior de 18 anos.
@@ -75,7 +77,17 @@ namespace DigitalBankApi.Services
 
         public async Task<bool> Delete(int id)
         {
-            if(await _clienteRepository.IdExists(id))
+            var clienteExists = await _clienteRepository.IdExists(id);
+            var contaBancariaOfThisClienteExists = await _contaBancariaRepository.IdExists(id);
+            if (clienteExists && contaBancariaOfThisClienteExists)
+            {
+                var contaBancariaOfThisCliente = await _contaBancariaRepository.GetByClienteId(id);
+                await _contaBancariaRepository.Delete(contaBancariaOfThisCliente);
+
+                await _clienteRepository.Delete(id);
+                return true;
+            }
+            else if (clienteExists)
             {
                 await _clienteRepository.Delete(id);
                 return true;
