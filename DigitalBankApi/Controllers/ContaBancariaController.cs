@@ -16,7 +16,11 @@ namespace DigitalBankApi.Controllers
             _contaBancariaService = contaBancariaService;
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Busca por todos as ContasBancarias cadastradas no banco de dados.
+        /// </summary>
+        /// <returns>Retorna List(ContaBancaria) caso exista uma ou mais ContaBancaria. Caso contrario retorna Null</returns>
+        [HttpGet("busca_conta_bancaria")]
         public async Task<IActionResult> GetAll()
         {
             var listContaBancaria = await _contaBancariaService.GetAll();
@@ -25,7 +29,13 @@ namespace DigitalBankApi.Controllers
             return Ok(listContaBancaria);
         }
 
-        [HttpGet("{cpf}")]
+        /// <summary>
+        /// Busca por uma ContaBancaria cadastrada no banco de dados.
+        /// </summary>
+        /// <remarks>O Cpf não deve ser vazio ou nulo.</remarks>
+        /// <param name="cpf"></param>
+        /// <returns>Retorna um objeto ContaBancaria.</returns>
+        [HttpGet("busca_conta_bancaria_por_cpf/{cpf}")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             if (string.IsNullOrEmpty(cpf))
@@ -37,7 +47,13 @@ namespace DigitalBankApi.Controllers
             return NotFound("A conta bancaria vinculada a esse Cpf não existe.");
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Adiciona uma ContaBancaria ao banco de dados.
+        /// </summary>
+        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo. O saldo deve ser positivo diferente de zero.</remarks>
+        /// <param name="contaBancaria"></param>
+        /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
+        [HttpPost("cadastro_conta_bancaria")]
         public async Task<IActionResult> Add(ContaBancaria contaBancaria)
         {
             if (contaBancaria.IdCliente <= 0)
@@ -53,7 +69,13 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Falha ao cadastrar conta.");
         }
 
-        [HttpDelete("{NumeroConta}")]
+        /// <summary>
+        /// Apaga uma ContaBancaria de acordo com seu Numero da Conta.
+        /// </summary>
+        /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
+        /// <param name="numeroConta"></param>
+        /// <returns>Não tem retorno.</returns>
+        [HttpDelete("apaga_conta_bancaria_por_cpf{NumeroConta}")]
         public async Task<IActionResult> Delete(int numeroConta)
         {
             if (numeroConta <= 0)
@@ -65,6 +87,12 @@ namespace DigitalBankApi.Controllers
             return NotFound("Não existe Conta Bancária com esse número.");
         }
 
+        /// <summary>
+        /// Deposita (adiciona) um valor do Saldo da ContaBancaria.
+        /// </summary>
+        /// <remarks>O IdCliente deve ser positivo diferente de zero. O NumeroConta deve ser positivo diferente de zero. O valor deve ser positivo diferente de zero.</remarks>
+        /// <param name="contaBancaria"></param>
+        /// <returns>Não tem retorno.</returns>
         [HttpPut("deposito")]
         public async Task<IActionResult> Deposito(ContaBancaria contaBancaria)
         {
@@ -74,13 +102,19 @@ namespace DigitalBankApi.Controllers
                 return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
             else if (contaBancaria.Saldo <= 0)
                 return BadRequest("Deposito inpossibilitado.\nO valor a ser depositado não pode ser negativo ou zero.");
-            
+
             var depositoWasMade = await _contaBancariaService.Deposito(contaBancaria);
             if (depositoWasMade)
                 return Ok(depositoWasMade);
             return BadRequest("Houve um erro ao depositar.");
         }
 
+        /// <summary>
+        /// Debita (retira) um valor do saldo da ContaBancaria.
+        /// </summary>
+        /// <remarks>O IdCliente deve ser positivo diferente de zero. O NumeroConta deve ser positivo diferente de zero. O valor deve ser positivo diferente de zero.</remarks>
+        /// <param name="contaBancaria"></param>
+        /// <returns>Não tem retorno.</returns>
         [HttpPut("debito")]
         public async Task<IActionResult> Debito(ContaBancaria contaBancaria)
         {
