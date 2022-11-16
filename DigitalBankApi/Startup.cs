@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DigitalBankApi.Data;
 using DigitalBankApi.Repositories;
@@ -15,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.OpenApi.Models;
 
 namespace DigitalBankApi
 {
@@ -38,6 +42,14 @@ namespace DigitalBankApi
             services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
             services.AddScoped<IContaBancariaService, ContaBancariaService>();
 
+            services.AddSwaggerGen(c => {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                var xml = Path.Combine(basePath, fileName);
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DigitalBank API", Version = "v1" });
+                c.IncludeXmlComments(xml);
+            }
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +70,14 @@ namespace DigitalBankApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.RoutePrefix = String.Empty;
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+            }
+            );
+
         }
     }
 }
