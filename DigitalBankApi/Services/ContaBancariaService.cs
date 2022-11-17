@@ -2,8 +2,10 @@
 using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
 using DigitalBankApi.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static DigitalBankApi.Models.Transacao;
 
 namespace DigitalBankApi.Services
 {
@@ -11,10 +13,12 @@ namespace DigitalBankApi.Services
     {
         private readonly IContaBancariaRepository _contaBancariaRepository;
         private readonly IClienteRepository _clienteRepository;
-        public ContaBancariaService(IContaBancariaRepository contaBancariaRepository, IClienteRepository clienteRepository)
+        private readonly ITransacaoRepository _transacaoRepository;
+        public ContaBancariaService(IContaBancariaRepository contaBancariaRepository, IClienteRepository clienteRepository, ITransacaoRepository transacaoRepository)
         {
             _contaBancariaRepository = contaBancariaRepository;
             _clienteRepository = clienteRepository;
+            _transacaoRepository = transacaoRepository;
         }
         public async Task<List<ContaBancaria>> GetAll()
         {
@@ -84,6 +88,13 @@ namespace DigitalBankApi.Services
                 var contaBancaria = await _contaBancariaRepository.GetByNumeroConta(numeroConta);
                 contaBancaria.Saldo += depositoDto.Saldo;
                 await _contaBancariaRepository.Deposito(contaBancaria);
+
+                Transacao transacao = new Transacao(
+                    contaBancaria.NumeroConta,
+                    TipoTransacao.Deposito,
+                    depositoDto.Saldo,
+                    DateTime.Now);
+                await _transacaoRepository.Add(transacao);
                 return true;
             }
             return false;
@@ -105,6 +116,13 @@ namespace DigitalBankApi.Services
                 {
                     contaBancaria.Saldo -= debitoDto.Saldo;
                     await _contaBancariaRepository.Debito(contaBancaria);
+
+                    Transacao transacao = new Transacao(
+                    contaBancaria.NumeroConta,
+                    TipoTransacao.Debito,
+                    -debitoDto.Saldo,
+                    DateTime.Now);
+                    await _transacaoRepository.Add(transacao);
                     return true;
                 }
                 return false;
@@ -116,16 +134,31 @@ namespace DigitalBankApi.Services
         {
             var contaOrigemExists = await _contaBancariaRepository.NumeroContaExists(numeroContaOrigem);
             var contaDestinoExists = await _contaBancariaRepository.NumeroContaExists(numeroContaDestino);
-            if(contaOrigemExists && contaDestinoExists)
+            if (contaOrigemExists && contaDestinoExists)
             {
                 var contaOrigem = await _contaBancariaRepository.GetByNumeroConta(numeroContaOrigem);
                 var contaDestino = await _contaBancariaRepository.GetByNumeroConta(numeroContaDestino);
                 contaOrigem.Saldo -= transferenciaDto.Saldo;
                 contaDestino.Saldo += transferenciaDto.Saldo;
                 await _contaBancariaRepository.Transferencia(contaOrigem, contaDestino);
+
+                Transacao transacaoOrigem = new Transacao(
+                    contaOrigem.NumeroConta,
+                    TipoTransacao.Transferencia_Enviada,
+                    -transferenciaDto.Saldo,
+                    DateTime.Now);
+                await _transacaoRepository.Add(transacaoOrigem);
+
+                Transacao transacaoDestino = new Transacao(
+                    contaDestino.NumeroConta,
+                    TipoTransacao.Transferencia_Recebida,
+                    transferenciaDto.Saldo,
+                    DateTime.Now);
+                await _transacaoRepository.Add(transacaoDestino);
                 return true;
             }
             return false;
         }
+
     }
 }

@@ -26,7 +26,7 @@ namespace DigitalBankApi.Controllers
             var listCliente = await _clienteService.GetAll();
             if (listCliente.Count == 0)
                 return NotFound("A lista está vazia.");
-            return Ok(await _clienteService.GetAll());
+            return Ok(listCliente);
         }
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
         /// <param name="numeroConta"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_bancaria_por_cpf{NumeroConta}")]
+        [HttpDelete("apaga_conta_bancaria_por_numero_conta/{NumeroConta}")]
         public async Task<IActionResult> Delete(int numeroConta)
         {
             if (numeroConta <= 0)
@@ -141,5 +141,16 @@ namespace DigitalBankApi.Controllers
                 return Ok();
             return BadRequest("Houve um erro na transação.");
         }
+
+        //[HttpGet("busca_transacoes_por_numero_conta/{NumeroConta}")]
+        //public async Task<IActionResult> GetAllTransacaoByNumeroConta(int numeroContaBancaria)
+        //{
+         //   if (numeroContaBancaria <= 0)
+          //      return BadRequest("O Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
+           // var listTransacoes = await _contaBancariaService.GetAllTransacaoByNumeroConta(numeroContaBancaria);
+           // if(listTransacoes.Count != 0)
+            //    return Ok(listTransacoes);
+            //return NotFound("Esta conta bancaria ainda não realizou nenhuma transação.");
+        //}
     }
 }

@@ -51,7 +51,7 @@ namespace DigitalBankApi.Repositories
             _context.ContaBancaria.Update(contaDestino);
             await _context.SaveChangesAsync();
         }
-        //GetAllTransacaoById
+        
 
         //Métodos de checagem no banco.
         public async Task<bool> IdExists(int id) => await _context.ContaBancaria.AnyAsync(b => b.IdCliente == id);

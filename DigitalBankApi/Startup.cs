@@ -41,6 +41,7 @@ namespace DigitalBankApi
             services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
             services.AddScoped<IContaBancariaService, ContaBancariaService>();
+            services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 
             services.AddSwaggerGen(c => {
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
