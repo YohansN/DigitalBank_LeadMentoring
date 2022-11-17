@@ -1,4 +1,5 @@
-﻿using DigitalBankApi.Models;
+﻿using DigitalBankApi.Dtos;
+using DigitalBankApi.Models;
 using DigitalBankApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -70,17 +71,18 @@ namespace DigitalBankApi.Controllers
         /// Atualiza os dados em Cliente.
         /// </summary>
         /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
-        /// <param name="cliente"></param>
+        /// <param name="IdCliente"></param>
+        /// <param name="clienteDto"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPut("atuarliza_perfil_cliente")]
-        public async Task<IActionResult> Update(Cliente cliente)
+        public async Task<IActionResult> Update([FromQuery] int idCliente, UpdateClienteDto clienteDto)
         {
-            if (cliente.IdCliente <= 0)
+            if (idCliente <= 0)
                 return BadRequest("O Id é invalido. Apenas Id's positivos e maiores que zero são validos.");
-            else if (string.IsNullOrEmpty(cliente.Nome))
+            else if (string.IsNullOrEmpty(clienteDto.Nome))
                 return BadRequest("O Nome é invalido.");
 
-            var updateCliente = await _clienteService.Update(cliente);
+            var updateCliente = await _clienteService.Update(idCliente, clienteDto);
             if (updateCliente)
                 return NoContent();
             return BadRequest("Falha ao atualizar cliente.");

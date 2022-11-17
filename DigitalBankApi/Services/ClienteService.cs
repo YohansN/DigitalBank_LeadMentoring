@@ -1,7 +1,9 @@
-﻿using DigitalBankApi.Models;
+﻿using DigitalBankApi.Dtos;
+using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
 using DigitalBankApi.Services.Interfaces;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace DigitalBankApi.Services
@@ -43,34 +45,19 @@ namespace DigitalBankApi.Services
             return true;
         }
 
-        public async Task<bool> Update(Cliente cliente)
+        public async Task<bool> Update(int idCliente, UpdateClienteDto clienteDto)
         {
-            var idExists = await _clienteRepository.IdExists(cliente.IdCliente);
-            var cpfExists = await _clienteRepository.CpfExists(cliente.Cpf);
-
+            var idExists = await _clienteRepository.IdExists(idCliente);
             if (idExists)
             {
-                if (cpfExists) //Cpf já existe:
-                {
-                    var clienteByCpf = await _clienteRepository.GetByCpf(cliente.Cpf);
-                    if (clienteByCpf.IdCliente == cliente.IdCliente) //O Cpf existente é do mesmo cliente.
-                    {
-                        if (cliente.Idade >= 18)
-                        {
-                            await _clienteRepository.Update(cliente);
-                            return true;
-                        }
-                        return false;
-                    }
+                var cliente = await _clienteRepository.GetById(idCliente);
+
+                if (string.IsNullOrEmpty(clienteDto.Nome) || clienteDto.Idade < 18)
                     return false;
-                }
-                //cpf ainda não existe:
-                if (cliente.Idade >= 18)
-                {
-                    await _clienteRepository.Update(cliente);
-                    return true;
-                }
-                 return false;
+                cliente.Nome = clienteDto.Nome;
+                cliente.Idade = clienteDto.Idade;
+                await _clienteRepository.Update(cliente);
+                return true;
             }
             return false;
         }
