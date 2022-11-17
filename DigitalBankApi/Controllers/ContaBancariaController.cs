@@ -1,4 +1,5 @@
-﻿using DigitalBankApi.Models;
+﻿using DigitalBankApi.Dtos;
+using DigitalBankApi.Models;
 using DigitalBankApi.Services;
 using DigitalBankApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -88,46 +89,45 @@ namespace DigitalBankApi.Controllers
         }
 
         /// <summary>
-        /// Deposita (adiciona) um valor do Saldo da ContaBancaria.
+        /// Deposita (adiciona) um valor do saldo da ContaBancaria.
         /// </summary>
-        /// <remarks>O IdCliente deve ser positivo diferente de zero. O NumeroConta deve ser positivo diferente de zero. O valor deve ser positivo diferente de zero.</remarks>
-        /// <param name="contaBancaria"></param>
+        /// <remarks>O NumeroConta deve ser positivo diferente de zero. O valor a ser depositado deve ser positivo diferente de zero.</remarks>
+        /// <param name="numeroConta"></param>
+        /// <param name="depositoDto"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPut("deposito")]
-        public async Task<IActionResult> Deposito(ContaBancaria contaBancaria)
+        public async Task<IActionResult> Deposito([FromQuery] int numeroConta, DepositoDebitoDto depositoDto)
         {
-            if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Deposito inpossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
-            else if (contaBancaria.NumeroConta <= 0)
+            
+            if (numeroConta <= 0)
                 return BadRequest("Deposito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
-            else if (contaBancaria.Saldo <= 0)
+            else if (depositoDto.Saldo <= 0)
                 return BadRequest("Deposito inpossibilitado.\nO valor a ser depositado não pode ser negativo ou zero.");
 
-            var depositoWasMade = await _contaBancariaService.Deposito(contaBancaria);
+            var depositoWasMade = await _contaBancariaService.Deposito(numeroConta, depositoDto);
             if (depositoWasMade)
-                return Ok(depositoWasMade);
+                return Ok();
             return BadRequest("Houve um erro ao depositar.");
         }
 
         /// <summary>
         /// Debita (retira) um valor do saldo da ContaBancaria.
         /// </summary>
-        /// <remarks>O IdCliente deve ser positivo diferente de zero. O NumeroConta deve ser positivo diferente de zero. O valor deve ser positivo diferente de zero.</remarks>
-        /// <param name="contaBancaria"></param>
+        /// <remarks>O NumeroConta deve ser positivo diferente de zero. O valor a ser debitado deve ser positivo diferente de zero.</remarks>
+        /// <param name="numeroConta"></param>
+        /// <param name="debitoDto"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPut("debito")]
-        public async Task<IActionResult> Debito(ContaBancaria contaBancaria)
+        public async Task<IActionResult> Debito([FromQuery]int numeroConta, DepositoDebitoDto debitoDto)
         {
-            if (contaBancaria.IdCliente <= 0)
-                return BadRequest("Debito inpossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
-            else if (contaBancaria.NumeroConta <= 0)
+            if (numeroConta <= 0)
                 return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
-            else if (contaBancaria.Saldo <= 0)
+            else if (debitoDto.Saldo <= 0)
                 return BadRequest("Debito inpossibilitado.\nO valor a ser debitado não pode ser negativo ou zero.");
 
-            var debitoWasMade = await _contaBancariaService.Debito(contaBancaria);
+            var debitoWasMade = await _contaBancariaService.Debito(numeroConta, debitoDto);
             if (debitoWasMade)
-                return Ok(debitoWasMade);
+                return Ok();
             return BadRequest("Houve um erro ao depositar.");
         }
     }
