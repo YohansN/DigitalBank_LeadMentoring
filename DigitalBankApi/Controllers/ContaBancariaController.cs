@@ -130,5 +130,16 @@ namespace DigitalBankApi.Controllers
                 return Ok();
             return BadRequest("Houve um erro ao depositar.");
         }
+
+        [HttpPut("transferencia")]
+        public async Task<IActionResult> Transferencia([FromQuery]int numeroContaOrigem, [FromQuery]int numeroContaDestino, TransferenciaDto transferenciaDto)
+        {
+            if (numeroContaOrigem <= 0 || numeroContaDestino <= 0)
+                return BadRequest("O número das contas bancarias não pode ser negativo ou zero.");
+            var transacaoWasMade = await _contaBancariaService.Transferencia(numeroContaOrigem, numeroContaDestino, transferenciaDto);
+            if (transacaoWasMade)
+                return Ok();
+            return BadRequest("Houve um erro na transação.");
+        }
     }
 }

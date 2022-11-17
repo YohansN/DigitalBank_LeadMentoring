@@ -45,9 +45,10 @@ namespace DigitalBankApi.Repositories
             await _context.SaveChangesAsync();
         }
         
-        public async Task Transferencia(ContaBancaria contaBancaria)
+        public async Task Transferencia(ContaBancaria contaOrigem, ContaBancaria contaDestino)
         {
-            _context.ContaBancaria.Update(contaBancaria);
+            _context.ContaBancaria.Update(contaOrigem);
+            _context.ContaBancaria.Update(contaDestino);
             await _context.SaveChangesAsync();
         }
         //GetAllTransacaoById

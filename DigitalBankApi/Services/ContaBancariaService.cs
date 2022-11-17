@@ -112,5 +112,20 @@ namespace DigitalBankApi.Services
             return false;
         }
 
+        public async Task<bool> Transferencia(int numeroContaOrigem, int numeroContaDestino, TransferenciaDto transferenciaDto)
+        {
+            var contaOrigemExists = await _contaBancariaRepository.NumeroContaExists(numeroContaOrigem);
+            var contaDestinoExists = await _contaBancariaRepository.NumeroContaExists(numeroContaDestino);
+            if(contaOrigemExists && contaDestinoExists)
+            {
+                var contaOrigem = await _contaBancariaRepository.GetByNumeroConta(numeroContaOrigem);
+                var contaDestino = await _contaBancariaRepository.GetByNumeroConta(numeroContaDestino);
+                contaOrigem.Saldo -= transferenciaDto.Saldo;
+                contaDestino.Saldo += transferenciaDto.Saldo;
+                await _contaBancariaRepository.Transferencia(contaOrigem, contaDestino);
+                return true;
+            }
+            return false;
+        }
     }
 }
