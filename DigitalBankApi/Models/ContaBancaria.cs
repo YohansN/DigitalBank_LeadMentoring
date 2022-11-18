@@ -9,6 +9,5 @@ namespace DigitalBankApi.Models
         public int NumeroConta { get; set; }
         public int IdCliente { get; set; }
         public decimal Saldo { get; set; }
-        //public List<Transacao> ListaTransacoes { get; set; }
     }
 }

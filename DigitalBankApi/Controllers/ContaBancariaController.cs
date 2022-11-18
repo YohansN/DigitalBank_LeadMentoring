@@ -21,7 +21,7 @@ namespace DigitalBankApi.Controllers
         /// Busca por todos as ContasBancarias cadastradas no banco de dados.
         /// </summary>
         /// <returns>Retorna List(ContaBancaria) caso exista uma ou mais ContaBancaria. Caso contrario retorna Null</returns>
-        [HttpGet("busca_conta_bancaria")]
+        [HttpGet("busca_contas_bancarias")]
         public async Task<IActionResult> GetAll()
         {
             var listContaBancaria = await _contaBancariaService.GetAll();
@@ -76,7 +76,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
         /// <param name="numeroConta"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_bancaria_por_numero_conta/{NumeroConta}")]
+        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{NumeroConta}")]
         public async Task<IActionResult> Delete(int numeroConta)
         {
             if (numeroConta <= 0)
@@ -142,15 +142,17 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Houve um erro na transação.");
         }
 
-        //[HttpGet("busca_transacoes_por_numero_conta/{NumeroConta}")]
-        //public async Task<IActionResult> GetAllTransacaoByNumeroConta(int numeroContaBancaria)
-        //{
-         //   if (numeroContaBancaria <= 0)
-          //      return BadRequest("O Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
-           // var listTransacoes = await _contaBancariaService.GetAllTransacaoByNumeroConta(numeroContaBancaria);
-           // if(listTransacoes.Count != 0)
-            //    return Ok(listTransacoes);
-            //return NotFound("Esta conta bancaria ainda não realizou nenhuma transação.");
-        //}
+        [HttpGet("busca_extrato_bancario_por_numero_da_conta/{numeroConta}")]
+        public async Task<IActionResult> GetExtratoByNumeroConta(int numeroConta)
+        {
+            if (numeroConta <= 0)
+                return BadRequest("O Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
+            var listTransacoes = await _contaBancariaService.GetExtratoByNumeroConta(numeroConta);
+            if (listTransacoes == null)
+                return BadRequest("Esta conta bancaria não existe.");
+            else if (listTransacoes.Count == 0)
+                return NotFound("Esta conta bancaria ainda não realizou nenhuma transação.");
+            return Ok(listTransacoes);
+        }
     }
 }

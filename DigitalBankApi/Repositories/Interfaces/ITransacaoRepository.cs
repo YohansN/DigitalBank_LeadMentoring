@@ -7,6 +7,6 @@ namespace DigitalBankApi.Repositories.Interfaces
     public interface ITransacaoRepository
     {
         Task Add(Transacao transacao);
-        Task<List<Transacao>> GetAllByNumeroConta();
+        Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria);
     }
 }

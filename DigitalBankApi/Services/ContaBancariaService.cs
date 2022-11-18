@@ -160,5 +160,14 @@ namespace DigitalBankApi.Services
             return false;
         }
 
+        public async Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria)
+        {
+            if(await _contaBancariaRepository.NumeroContaExists(numeroContaBancaria))
+            {
+                var listaTransacoesByNumeroConta = await _transacaoRepository.GetExtratoByNumeroConta(numeroContaBancaria);
+                return listaTransacoesByNumeroConta;
+            }
+            return null;
+        }
     }
 }

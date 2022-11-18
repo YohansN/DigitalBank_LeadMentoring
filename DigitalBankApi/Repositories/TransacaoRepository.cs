@@ -3,6 +3,7 @@ using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigitalBankApi.Repositories
@@ -23,7 +24,12 @@ namespace DigitalBankApi.Repositories
         }
 
         //GetAllByNumeroConta - Retorna todas as transacoes de uma conta.
-        public async Task<List<Transacao>> GetAllByNumeroConta() => await _context.Transacao.ToListAsync();
-
+        public async Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria)
+        {
+            var listaTransacoes = await _context.Transacao.Where(t => t.NumeroConta == numeroContaBancaria).ToListAsync();
+            //var listaTransacoesByNumeroConta = (listaTransacoes.Where(t => t.NumeroConta == numeroContaBancaria)).ToList();
+            //return listaTransacoesByNumeroConta;
+            return listaTransacoes;
+        }
     }
 }
