@@ -2,6 +2,7 @@
 using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,9 +28,15 @@ namespace DigitalBankApi.Repositories
         public async Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria)
         {
             var listaTransacoes = await _context.Transacao.Where(t => t.NumeroConta == numeroContaBancaria).ToListAsync();
-            //var listaTransacoesByNumeroConta = (listaTransacoes.Where(t => t.NumeroConta == numeroContaBancaria)).ToList();
-            //return listaTransacoesByNumeroConta;
             return listaTransacoes;
+        }
+
+        //DeleteTransacoes 
+        public async Task DeleteTransacoes(int numeroConta)
+        {
+            var transacoesToDelete = _context.Transacao.Where(t => t.NumeroConta == numeroConta);
+            _context.Transacao.RemoveRange(transacoesToDelete);
+            await _context.SaveChangesAsync();
         }
     }
 }

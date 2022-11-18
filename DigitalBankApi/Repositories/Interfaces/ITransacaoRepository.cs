@@ -8,5 +8,6 @@ namespace DigitalBankApi.Repositories.Interfaces
     {
         Task Add(Transacao transacao);
         Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria);
+        Task DeleteTransacoes(int numeroConta);
     }
 }

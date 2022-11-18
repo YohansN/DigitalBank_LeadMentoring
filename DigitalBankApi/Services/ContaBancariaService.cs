@@ -67,6 +67,7 @@ namespace DigitalBankApi.Services
         {
             if(await _contaBancariaRepository.NumeroContaExists(numeroConta))
             {
+                await _transacaoRepository.DeleteTransacoes(numeroConta);
                 var contaBancariaToDelete = await _contaBancariaRepository.GetByNumeroConta(numeroConta);
                 await _contaBancariaRepository.Delete(contaBancariaToDelete);
                 return true;
