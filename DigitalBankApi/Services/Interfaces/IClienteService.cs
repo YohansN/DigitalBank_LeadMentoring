@@ -9,7 +9,7 @@ namespace DigitalBankApi.Services.Interfaces
     {
         Task<List<Cliente>> GetAll();
         Task<Cliente> GetById(int id);
-        Task<bool> Add(Cliente cliente);
+        Task<bool> Add(AddClienteDto clienteDto);
         Task<bool> Update(int idCliente, UpdateClienteDto clienteDto);
         Task<bool> Delete(int id);
     }

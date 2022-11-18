@@ -49,7 +49,7 @@ namespace DigitalBankApi.Services
             - Uma cliente so pode estar vinculado a UMA conta bancaria.
              */
             var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            //var clienteExists = await _clienteRepository.GetById(contaBancaria.IdCliente);
+            
             var clienteExists = await _clienteRepository.IdExists(contaBancaria.IdCliente);
             if (contaBancariaExists == null && clienteExists == true && contaBancaria.Saldo > 0)
             {

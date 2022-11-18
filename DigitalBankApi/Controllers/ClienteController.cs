@@ -54,16 +54,14 @@ namespace DigitalBankApi.Controllers
         /// <param name="cliente"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPost("cadastro_cliente")]
-        public async Task<IActionResult> Add(Cliente cliente)
+        public async Task<IActionResult> Add(AddClienteDto clienteDto)
         {
-            if (cliente.IdCliente <= 0)
-                return BadRequest("O Id é invalido. Apenas Id's positivos e maiores que zero são validos.");
-            else if (string.IsNullOrEmpty(cliente.Nome))
+            if (string.IsNullOrEmpty(clienteDto.Nome))
                 return BadRequest("O Nome é invalido.");
 
-            var addCliente = await _clienteService.Add(cliente);
+            var addCliente = await _clienteService.Add(clienteDto);
             if (addCliente)
-                return Created("O cliente foi cadastrado.", cliente);
+                return Created("O cliente foi cadastrado.", clienteDto);
             return BadRequest("Falha ao cadastrar cliente:\n - O cliente não pode ser menor de idade. \n - Esse id já existe. \n - Esse CPF já existe.");
         }
 

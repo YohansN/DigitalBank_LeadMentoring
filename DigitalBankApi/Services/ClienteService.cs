@@ -34,13 +34,12 @@ namespace DigitalBankApi.Services
             return null;
         }
 
-        public async Task<bool> Add(Cliente cliente)
+        public async Task<bool> Add(AddClienteDto clienteDto)
         {
-            var cpfExists = await _clienteRepository.CpfExists(cliente.Cpf);
-            var idExists = await _clienteRepository.IdExists(cliente.IdCliente);
-            //Verificacao: Caso falha - Idade menor que 18; Id já em uso (existente); Cpf já em uso (existente);
-            if (cliente.Idade < 18 || idExists || cpfExists)
+            var cpfExists = await _clienteRepository.CpfExists(clienteDto.Cpf);
+            if (clienteDto.Idade < 18 || cpfExists)
                 return false;
+            Cliente cliente = new Cliente(clienteDto.Nome, clienteDto.Cpf, clienteDto.Idade);
             await _clienteRepository.Add(cliente);
             return true;
         }
