@@ -51,7 +51,11 @@ namespace DigitalBankApi.Controllers
         /// <summary>
         /// Adiciona uma ContaBancaria ao banco de dados.
         /// </summary>
-        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo. O saldo deve ser positivo diferente de zero.</remarks>
+        /// <remarks>
+        /// O Id deve ser positivo diferente de zero. 
+        /// O Nome não deve ser vazio ou nulo. 
+        /// O saldo deve ser positivo diferente de zero.
+        /// </remarks>
         /// <param name="contaBancaria"></param>
         /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
         [HttpPost("cadastro_conta_bancaria")]
@@ -91,7 +95,10 @@ namespace DigitalBankApi.Controllers
         /// <summary>
         /// Deposita (adiciona) um valor do saldo da ContaBancaria.
         /// </summary>
-        /// <remarks>O NumeroConta deve ser positivo diferente de zero. O valor a ser depositado deve ser positivo diferente de zero.</remarks>
+        /// <remarks>
+        /// O NumeroConta deve ser positivo diferente de zero. 
+        /// O valor a ser depositado deve ser positivo diferente de zero.
+        /// </remarks>
         /// <param name="numeroConta"></param>
         /// <param name="depositoDto"></param>
         /// <returns>Não tem retorno.</returns>
@@ -113,12 +120,15 @@ namespace DigitalBankApi.Controllers
         /// <summary>
         /// Debita (retira) um valor do saldo da ContaBancaria.
         /// </summary>
-        /// <remarks>O NumeroConta deve ser positivo diferente de zero. O valor a ser debitado deve ser positivo diferente de zero.</remarks>
+        /// <remarks>
+        /// O NumeroConta deve ser positivo diferente de zero. 
+        /// O valor a ser debitado deve ser positivo diferente de zero.
+        /// </remarks>
         /// <param name="numeroConta"></param>
         /// <param name="debitoDto"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPut("debito")]
-        public async Task<IActionResult> Debito([FromQuery]int numeroConta, DepositoDebitoDto debitoDto)
+        public async Task<IActionResult> Debito([FromQuery] int numeroConta, DepositoDebitoDto debitoDto)
         {
             if (numeroConta <= 0)
                 return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
@@ -131,17 +141,37 @@ namespace DigitalBankApi.Controllers
             return BadRequest("Houve um erro ao depositar.");
         }
 
+        /// <summary>
+        /// Transfere um valor de uma conta (origem) para outra conta (destino).
+        /// </summary>
+        /// <remarks>
+        /// Os NumeroConta devem ser positivo diferente de zero.
+        /// O valor a ser transferido deve ser positivo diferente de zero.
+        /// O valor transferido não pode ser maior que o saldo da conta de origem.
+        /// </remarks>
+        /// <param name="numeroContaOrigem"></param>
+        /// <param name="numeroContaDestino"></param>
+        /// <param name="transferenciaDto"></param>
+        /// <returns>Não tem retorno.</returns>
         [HttpPut("transferencia")]
         public async Task<IActionResult> Transferencia([FromQuery]int numeroContaOrigem, [FromQuery]int numeroContaDestino, TransferenciaDto transferenciaDto)
         {
             if (numeroContaOrigem <= 0 || numeroContaDestino <= 0)
                 return BadRequest("O número das contas bancarias não pode ser negativo ou zero.");
+            else if (transferenciaDto.Saldo <= 0)
+                return BadRequest("O valor a ser transferido não pode ser negativo ou zero.");
             var transacaoWasMade = await _contaBancariaService.Transferencia(numeroContaOrigem, numeroContaDestino, transferenciaDto);
             if (transacaoWasMade)
                 return Ok();
             return BadRequest("Houve um erro na transação.");
         }
 
+        /// <summary>
+        /// Busca todas as transações realizadas por uma conta bancaria (extrato) a partir do seu numero da conta.
+        /// </summary>
+        /// <remarks>Os NumeroConta devem ser positivo diferente de zero.</remarks>
+        /// <param name="numeroConta"></param>
+        /// <returns></returns>
         [HttpGet("busca_extrato_bancario_por_numero_da_conta/{numeroConta}")]
         public async Task<IActionResult> GetExtratoByNumeroConta(int numeroConta)
         {
