@@ -138,6 +138,9 @@ namespace DigitalBankApi.Services
             {
                 var contaOrigem = await _contaBancariaRepository.GetByNumeroConta(numeroContaOrigem);
                 var contaDestino = await _contaBancariaRepository.GetByNumeroConta(numeroContaDestino);
+                if (contaOrigem.Saldo < transferenciaDto.Saldo)
+                    return false;
+
                 contaOrigem.Saldo -= transferenciaDto.Saldo;
                 contaDestino.Saldo += transferenciaDto.Saldo;
                 await _contaBancariaRepository.Transferencia(contaOrigem, contaDestino);
