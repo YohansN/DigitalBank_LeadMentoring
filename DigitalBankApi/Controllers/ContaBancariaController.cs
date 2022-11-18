@@ -80,7 +80,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
         /// <param name="numeroConta"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{NumeroConta}")]
+        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{numeroConta}")]
         public async Task<IActionResult> Delete(int numeroConta)
         {
             if (numeroConta <= 0)
@@ -102,8 +102,8 @@ namespace DigitalBankApi.Controllers
         /// <param name="numeroConta"></param>
         /// <param name="depositoDto"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpPut("deposito")]
-        public async Task<IActionResult> Deposito([FromQuery] int numeroConta, DepositoDebitoDto depositoDto)
+        [HttpPut("deposito/{numeroConta}")]
+        public async Task<IActionResult> Deposito(int numeroConta, DepositoDebitoDto depositoDto)
         {
             
             if (numeroConta <= 0)
@@ -127,8 +127,8 @@ namespace DigitalBankApi.Controllers
         /// <param name="numeroConta"></param>
         /// <param name="debitoDto"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpPut("debito")]
-        public async Task<IActionResult> Debito([FromQuery] int numeroConta, DepositoDebitoDto debitoDto)
+        [HttpPut("debito/{numeroConta}")]
+        public async Task<IActionResult> Debito(int numeroConta, DepositoDebitoDto debitoDto)
         {
             if (numeroConta <= 0)
                 return BadRequest("Debito inpossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
