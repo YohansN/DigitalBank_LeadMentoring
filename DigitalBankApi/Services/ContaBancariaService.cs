@@ -40,23 +40,16 @@ namespace DigitalBankApi.Services
             return null;
         }
 
-        public async Task<bool> Add(ContaBancaria contaBancaria)
-        {
-            /*
-            - Numero conta não pode existir previamente.
-            - IdCliente tem que existir. (Um cliente so pode ter uma conta bancaria e vice versa)
-            - Saldo nao pode ser negativo.
-            - Uma cliente so pode estar vinculado a UMA conta bancaria.
-             */
-            var contaBancariaExists = await _contaBancariaRepository.GetByNumeroConta(contaBancaria.NumeroConta);
-            
-            var clienteExists = await _clienteRepository.IdExists(contaBancaria.IdCliente);
-            if (contaBancariaExists == null && clienteExists == true && contaBancaria.Saldo > 0)
+        public async Task<bool> Add(AddContaBancariaDto contaBancariaDto)
+        { 
+            var clienteExists = await _clienteRepository.IdExists(contaBancariaDto.IdCliente);
+            if (clienteExists == true && contaBancariaDto.Saldo > 0)
             {
                 //Verifica se aquela conta já está atrelada a algum cliente:
-                var contaBancariaAlreadExists = await _contaBancariaRepository.IdExists(contaBancaria.IdCliente);
+                var contaBancariaAlreadExists = await _contaBancariaRepository.IdExists(contaBancariaDto.IdCliente);
                 if (contaBancariaAlreadExists)
                     return false;
+                ContaBancaria contaBancaria = new ContaBancaria(contaBancariaDto.IdCliente, contaBancariaDto.Saldo);
                 await _contaBancariaRepository.Add(contaBancaria);
                 return true;
             }

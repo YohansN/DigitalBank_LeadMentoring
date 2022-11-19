@@ -51,7 +51,7 @@ namespace DigitalBankApi.Controllers
         /// Cadastra um Cliente no banco de dados.
         /// </summary>
         /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
-        /// <param name="cliente"></param>
+        /// <param name="clienteDto"></param>
         /// <returns>Não tem retorno.</returns>
         [HttpPost("cadastro_cliente")]
         public async Task<IActionResult> Add(AddClienteDto clienteDto)

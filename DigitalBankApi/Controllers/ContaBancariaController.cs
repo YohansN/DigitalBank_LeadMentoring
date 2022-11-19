@@ -56,21 +56,19 @@ namespace DigitalBankApi.Controllers
         /// O Nome não deve ser vazio ou nulo. 
         /// O saldo deve ser positivo diferente de zero.
         /// </remarks>
-        /// <param name="contaBancaria"></param>
+        /// <param name="contaBancariaDto"></param>
         /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
         [HttpPost("cadastro_conta_bancaria")]
-        public async Task<IActionResult> Add(ContaBancaria contaBancaria)
+        public async Task<IActionResult> Add(AddContaBancariaDto contaBancariaDto)
         {
-            if (contaBancaria.IdCliente <= 0)
+            if (contaBancariaDto.IdCliente <= 0)
                 return BadRequest("Cadastro impossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
-            else if (contaBancaria.NumeroConta <= 0)
-                return BadRequest("Cadastro impossibilitado.\nO Numero da Conta Bancaria é inválido.\nApenas numeros positivos e maiores que zero são validos.");
-            else if (contaBancaria.Saldo <= 0)
+            else if (contaBancariaDto.Saldo <= 0)
                 return BadRequest("Cadastro impossibilitado.\nSaldo inválido.\nO saldo inicial da conta deve ser positivo diferente de zero.");
 
-                var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancaria);
+                var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancariaDto);
             if (contaBancariaIsCreated)
-                return Created("A conta foi cadastrada com sucesso!", contaBancaria);
+                return Created("A conta foi cadastrada com sucesso!", contaBancariaDto);
             return BadRequest("Falha ao cadastrar conta.");
         }
 

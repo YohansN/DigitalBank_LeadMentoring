@@ -11,7 +11,7 @@ namespace DigitalBankApi.Services.Interfaces
         Task<List<ContaBancaria>> GetAll();
         Task<ContaBancaria> GetByCpf(string cpf);
         Task<List<Transacao>> GetExtratoByNumeroConta(int numeroContaBancaria);
-        Task<bool> Add(ContaBancaria contaBancaria);
+        Task<bool> Add(AddContaBancariaDto contaBancariaDto);
         Task<bool> Delete(int numeroConta);
         Task<bool> Deposito(int numeroConta, DepositoDebitoDto depositoDto);
         Task<bool> Debito(int numeroConta, DepositoDebitoDto debitoDto);
