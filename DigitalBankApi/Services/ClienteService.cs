@@ -17,10 +17,6 @@ namespace DigitalBankApi.Services
             _clienteRepository = clienteRepository;
             _contaBancariaRepository = contaBancariaRepository;
         }
-        /* REGRAS
-         * No Add a idade tem que ser igual ou maior de 18 anos.
-         * Validar CPF - Não podem existir pessoas com mesmo CPF
-         * Validar CPF - Validar se esta no formato aceito (posteriormente) */
 
         public async Task<List<Cliente>> GetAll()
         {
@@ -49,10 +45,9 @@ namespace DigitalBankApi.Services
             var idExists = await _clienteRepository.IdExists(idCliente);
             if (idExists)
             {
-                var cliente = await _clienteRepository.GetById(idCliente);
-
-                if (string.IsNullOrEmpty(clienteDto.Nome) || clienteDto.Idade < 18)
+                if (clienteDto.Idade < 18)
                     return false;
+                var cliente = await _clienteRepository.GetById(idCliente);
                 cliente.Nome = clienteDto.Nome;
                 cliente.Idade = clienteDto.Idade;
                 await _clienteRepository.Update(cliente);

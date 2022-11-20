@@ -72,10 +72,6 @@ namespace DigitalBankApi.Controllers
             return NotFound("A conta bancaria vinculada a esse Cpf não existe.");
         }
 
-        
-
-        
-
         /// <summary>
         /// Deposita (adiciona) um valor do saldo da ContaBancaria.
         /// </summary>
@@ -97,8 +93,8 @@ namespace DigitalBankApi.Controllers
 
             var depositoWasMade = await _contaBancariaService.Deposito(numeroConta, depositoDto);
             if (depositoWasMade)
-                return Ok();
-            return BadRequest("Houve um erro ao depositar.");
+                return Ok("Deposito realizado com sucesso.");
+            return BadRequest("Houve um erro ao depositar.\n-Não existe conta bancária com esse número.");
         }
 
         /// <summary>
@@ -122,7 +118,7 @@ namespace DigitalBankApi.Controllers
             var debitoWasMade = await _contaBancariaService.Debito(numeroConta, debitoDto);
             if (debitoWasMade)
                 return Ok();
-            return BadRequest("Houve um erro ao depositar.");
+            return BadRequest("Houve um erro ao depositar.\n-Não existe conta bancária com esse número.\nOu\n-Valor a debitado é maior que o saldo da conta.");
         }
 
         /// <summary>
@@ -147,7 +143,7 @@ namespace DigitalBankApi.Controllers
             var transacaoWasMade = await _contaBancariaService.Transferencia(numeroContaOrigem, numeroContaDestino, transferenciaDto);
             if (transacaoWasMade)
                 return Ok();
-            return BadRequest("Houve um erro na transação.");
+            return BadRequest("Houve um erro na transação.\n-Não existe conta bancária com esse número (Conta de origem e/ou Conta de destino).\nOu\n-Valor a debitado é maior que o saldo da conta de origem.");
         }
 
         /// <summary>

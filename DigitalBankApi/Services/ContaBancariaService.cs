@@ -47,7 +47,7 @@ namespace DigitalBankApi.Services
         public async Task<bool> Add(AddContaBancariaDto contaBancariaDto)
         { 
             var clienteExists = await _clienteRepository.IdExists(contaBancariaDto.IdCliente);
-            if (clienteExists == true && contaBancariaDto.Saldo > 0)
+            if (clienteExists && contaBancariaDto.Saldo > 0)
             {
                 //Verifica se aquela conta já está atrelada a algum cliente:
                 var contaBancariaAlreadExists = await _contaBancariaRepository.IdExists(contaBancariaDto.IdCliente);
@@ -74,13 +74,6 @@ namespace DigitalBankApi.Services
 
         public async Task<bool> Deposito(int numeroConta, DepositoDebitoDto depositoDto)
         {
-            /*
-            - O numero da conta tem que existir, o dinheiro vai pra ela.
-            - Verificar se o IdCliente passado existe tambem.
-            - Caso exista, o IdCliente não pode ser modificado, ou seja tem que ser igual ao que esta no banco de dados.
-            - O numero da conta tem que estar atrelado ao IdCliente.
-            - O saldo não pode ser menor que o saldo previamente existente.
-            */
             if (await _contaBancariaRepository.NumeroContaExists(numeroConta))
             {
                 var contaBancaria = await _contaBancariaRepository.GetByNumeroConta(numeroConta);
@@ -100,14 +93,6 @@ namespace DigitalBankApi.Services
 
         public async Task<bool> Debito(int numeroConta, DepositoDebitoDto debitoDto)
         {
-            /*
-            - O numero da conta tem que existir, o dinheiro vai pra ela.
-            - Se a conta existe o Cliente também mas devemos verificar 
-            - Verificar se o IdCliente passado existe tambem.
-            - Caso exista, o IdCliente não pode ser modificado, ou seja tem que ser igual ao que esta no banco de dados.
-            - O numero da conta tem que estar atrelado ao IdCliente.
-            - O saldo não pode ser maior que o saldo previamente existente.
-            */
             if (await _contaBancariaRepository.NumeroContaExists(numeroConta)){
                 var contaBancaria = await _contaBancariaRepository.GetByNumeroConta(numeroConta);
                 if (debitoDto.Saldo <= contaBancaria.Saldo)

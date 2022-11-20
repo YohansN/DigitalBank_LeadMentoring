@@ -26,10 +26,10 @@ namespace DigitalBankApi.Controllers
         [HttpPost("cadastro_cliente")]
         public async Task<IActionResult> Add(AddClienteDto clienteDto)
         {
-            if (string.IsNullOrEmpty(clienteDto.Nome) || string.IsNullOrEmpty(clienteDto.Cpf))
+            if (string.IsNullOrEmpty(clienteDto.Nome))
                 return BadRequest("O Nome é invalido.");
-            else if (clienteDto.Idade <= 0)
-                return BadRequest("A idade é invalida,");
+            else if (string.IsNullOrEmpty(clienteDto.Cpf))
+                return BadRequest("O Cpf é invalido.");
 
             var addCliente = await _clienteService.Add(clienteDto);
             if (addCliente)
@@ -54,8 +54,8 @@ namespace DigitalBankApi.Controllers
 
             var updateCliente = await _clienteService.Update(id, clienteDto);
             if (updateCliente)
-                return NoContent();
-            return BadRequest("Falha ao atualizar cliente.");
+                return Ok("Dados atualizados com sucesso.");
+            return BadRequest("Falha ao atualizar cliente.\n-Não existe cliente com esse id.\nOu\nIdade não permitida.");
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace DigitalBankApi.Controllers
                 return BadRequest("O Id é invalido. Apenas Id's positivos e maiores que zero são validos.");
             var deleteCliente = await _clienteService.Delete(id);
             if (deleteCliente)
-                return Ok();
+                return Ok("Cliente apagado com sucesso.");
             return BadRequest("Falha ao deletar cliente:\n - Cliente inexistente.");
         }
     }
