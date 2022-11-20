@@ -20,10 +20,10 @@ namespace DigitalBankApi.Controllers
         /// <summary>
         /// Cadastra um Cliente no banco de dados.
         /// </summary>
-        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
+        /// <remarks>O Nome e o Cpf não devem ser vazios ou nulos.</remarks>
         /// <param name="clienteDto"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpPost("cadastro_cliente")]
+        [HttpPost("cadastro-cliente")]
         public async Task<IActionResult> Add(AddClienteDto clienteDto)
         {
             if (string.IsNullOrEmpty(clienteDto.Nome))
@@ -34,7 +34,7 @@ namespace DigitalBankApi.Controllers
             var addCliente = await _clienteService.Add(clienteDto);
             if (addCliente)
                 return Created("O cliente foi cadastrado.", clienteDto);
-            return BadRequest("Falha ao cadastrar cliente:\n - O cliente não pode ser menor de idade. \n - Esse id já existe. \n - Esse CPF já existe.");
+            return BadRequest("Falha ao cadastrar cliente:\n - O cliente não pode ser menor de idade.\nOu\n - Esse CPF já existe.");
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace DigitalBankApi.Controllers
         /// <param name="id"></param>
         /// <param name="clienteDto"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpPut("atualiza_perfil_cliente/{id}")]
+        [HttpPut("atualiza-perfil-cliente/{id}")]
         public async Task<IActionResult> Update(int id, UpdateClienteDto clienteDto)
         {
             if (id <= 0)
@@ -55,14 +55,14 @@ namespace DigitalBankApi.Controllers
             var updateCliente = await _clienteService.Update(id, clienteDto);
             if (updateCliente)
                 return Ok("Dados atualizados com sucesso.");
-            return BadRequest("Falha ao atualizar cliente.\n-Não existe cliente com esse id.\nOu\nIdade não permitida.");
+            return BadRequest("Falha ao atualizar cliente.\n - Não existe cliente com esse id.\nOu\n - Idade não permitida.");
         }
 
         /// <summary>
         /// Busca por todos os Clientes cadastrados no banco de dados.
         /// </summary>
         /// <returns>Retorna List(Cliente) caso exista um ou mais Cliente. Caso contrario retorna Null</returns>
-        [HttpGet("/busca_clientes")]
+        [HttpGet("/busca-clientes")]
         public async Task<IActionResult> GetAll()
         {
             var listCliente = await _clienteService.GetAll();
@@ -77,7 +77,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O Id deve ser positivo diferente de zero.</remarks>
         /// <param name="id"></param>
         /// <returns>Caso exista um Cliente com esse Id: Retorna um objeto Cliente. Caso contrário retorna NotFound.</returns>
-        [HttpGet("busca_cliente_por_id/{id}")]
+        [HttpGet("busca-cliente-por-id/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             if (id <= 0)
@@ -95,7 +95,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O Id deve ser positivo diferente de zero.</remarks>
         /// <param name="id"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_cliente_por_id/{id}")]
+        [HttpDelete("apaga-conta-cliente-por-id/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)

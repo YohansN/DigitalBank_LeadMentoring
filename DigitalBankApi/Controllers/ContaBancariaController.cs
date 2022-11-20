@@ -21,13 +21,11 @@ namespace DigitalBankApi.Controllers
         /// Adiciona uma ContaBancaria ao banco de dados.
         /// </summary>
         /// <remarks>
-        /// O Id deve ser positivo diferente de zero. 
-        /// O Nome não deve ser vazio ou nulo. 
-        /// O saldo deve ser positivo diferente de zero.
+        /// O Id dp Cliente deve ser positivo diferente de zero. O saldo deve ser positivo diferente de zero.
         /// </remarks>
         /// <param name="contaBancariaDto"></param>
         /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
-        [HttpPost("cadastro_conta_bancaria")]
+        [HttpPost("cadastro-conta-bancaria")]
         public async Task<IActionResult> Add(AddContaBancariaDto contaBancariaDto)
         {
             if (contaBancariaDto.IdCliente <= 0)
@@ -38,14 +36,14 @@ namespace DigitalBankApi.Controllers
             var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancariaDto);
             if (contaBancariaIsCreated)
                 return Created("A conta foi cadastrada com sucesso!", contaBancariaDto);
-            return BadRequest("Falha ao cadastrar conta.");
+            return BadRequest("Falha ao cadastrar conta.\n - Id cliente invalido");
         }
 
         /// <summary>
         /// Busca por todos as ContasBancarias cadastradas no banco de dados.
         /// </summary>
         /// <returns>Retorna List(ContaBancaria) caso exista uma ou mais ContaBancaria. Caso contrario retorna Null</returns>
-        [HttpGet("busca_contas_bancarias")]
+        [HttpGet("busca-contas-bancarias")]
         public async Task<IActionResult> GetAll()
         {
             var listContaBancaria = await _contaBancariaService.GetAll();
@@ -60,7 +58,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O Cpf não deve ser vazio ou nulo.</remarks>
         /// <param name="cpf"></param>
         /// <returns>Retorna um objeto ContaBancaria.</returns>
-        [HttpGet("busca_conta_bancaria_por_cpf/{cpf}")]
+        [HttpGet("busca-conta-bancaria-por-cpf/{cpf}")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             if (string.IsNullOrEmpty(cpf))
@@ -152,7 +150,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>Os NumeroConta devem ser positivo diferente de zero.</remarks>
         /// <param name="numeroConta"></param>
         /// <returns></returns>
-        [HttpGet("busca_extrato_bancario_por_numero_da_conta/{numeroConta}")]
+        [HttpGet("busca-extrato-bancario-por-numero-da-conta/{numeroConta}")]
         public async Task<IActionResult> GetExtratoByNumeroConta(int numeroConta)
         {
             if (numeroConta <= 0)
@@ -171,7 +169,7 @@ namespace DigitalBankApi.Controllers
         /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
         /// <param name="numeroConta"></param>
         /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{numeroConta}")]
+        [HttpDelete("apaga-conta-bancaria-por-numero-da-conta/{numeroConta}")]
         public async Task<IActionResult> Delete(int numeroConta)
         {
             if (numeroConta <= 0)
