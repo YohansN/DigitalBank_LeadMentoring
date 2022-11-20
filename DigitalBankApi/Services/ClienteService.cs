@@ -3,6 +3,7 @@ using DigitalBankApi.Models;
 using DigitalBankApi.Repositories.Interfaces;
 using DigitalBankApi.Services.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
@@ -12,10 +13,12 @@ namespace DigitalBankApi.Services
     {
         private readonly IClienteRepository _clienteRepository;
         private readonly IContaBancariaRepository _contaBancariaRepository;
-        public ClienteService(IClienteRepository clienteRepository, IContaBancariaRepository contaBancariaRepository)
+        private readonly ITransacaoRepository _transacaoRepository;
+        public ClienteService(IClienteRepository clienteRepository, IContaBancariaRepository contaBancariaRepository, ITransacaoRepository transacaoRepository)
         {
             _clienteRepository = clienteRepository;
             _contaBancariaRepository = contaBancariaRepository;
+            _transacaoRepository = transacaoRepository;
         }
 
         public async Task<List<Cliente>> GetAll()
@@ -60,11 +63,16 @@ namespace DigitalBankApi.Services
         {
             var clienteExists = await _clienteRepository.IdExists(id);
             var contaBancariaOfThisClienteExists = await _contaBancariaRepository.IdExists(id);
+            //verificar se existem 
+            
             if (clienteExists && contaBancariaOfThisClienteExists)
             {
                 var contaBancariaOfThisCliente = await _contaBancariaRepository.GetByClienteId(id);
-                await _contaBancariaRepository.Delete(contaBancariaOfThisCliente);
+                var transacaoOfThisContaBancaria = await _transacaoRepository.GetExtratoByNumeroConta(contaBancariaOfThisCliente.NumeroConta);
 
+                if (transacaoOfThisContaBancaria != null)
+                    await _transacaoRepository.DeleteTransacoes(contaBancariaOfThisCliente.NumeroConta);
+                await _contaBancariaRepository.Delete(contaBancariaOfThisCliente);
                 await _clienteRepository.Delete(id);
                 return true;
             }
