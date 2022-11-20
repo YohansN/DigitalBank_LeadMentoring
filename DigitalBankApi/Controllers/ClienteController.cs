@@ -18,6 +18,47 @@ namespace DigitalBankApi.Controllers
         }
 
         /// <summary>
+        /// Cadastra um Cliente no banco de dados.
+        /// </summary>
+        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
+        /// <param name="clienteDto"></param>
+        /// <returns>Não tem retorno.</returns>
+        [HttpPost("cadastro_cliente")]
+        public async Task<IActionResult> Add(AddClienteDto clienteDto)
+        {
+            if (string.IsNullOrEmpty(clienteDto.Nome) || string.IsNullOrEmpty(clienteDto.Cpf))
+                return BadRequest("O Nome é invalido.");
+            else if (clienteDto.Idade <= 0)
+                return BadRequest("A idade é invalida,");
+
+            var addCliente = await _clienteService.Add(clienteDto);
+            if (addCliente)
+                return Created("O cliente foi cadastrado.", clienteDto);
+            return BadRequest("Falha ao cadastrar cliente:\n - O cliente não pode ser menor de idade. \n - Esse id já existe. \n - Esse CPF já existe.");
+        }
+
+        /// <summary>
+        /// Atualiza os dados em Cliente.
+        /// </summary>
+        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
+        /// <param name="id"></param>
+        /// <param name="clienteDto"></param>
+        /// <returns>Não tem retorno.</returns>
+        [HttpPut("atualiza_perfil_cliente/{id}")]
+        public async Task<IActionResult> Update(int id, UpdateClienteDto clienteDto)
+        {
+            if (id <= 0)
+                return BadRequest("O Id é invalido. Apenas Id's positivos e maiores que zero são validos.");
+            else if (string.IsNullOrEmpty(clienteDto.Nome))
+                return BadRequest("O Nome é invalido.");
+
+            var updateCliente = await _clienteService.Update(id, clienteDto);
+            if (updateCliente)
+                return NoContent();
+            return BadRequest("Falha ao atualizar cliente.");
+        }
+
+        /// <summary>
         /// Busca por todos os Clientes cadastrados no banco de dados.
         /// </summary>
         /// <returns>Retorna List(Cliente) caso exista um ou mais Cliente. Caso contrario retorna Null</returns>
@@ -46,47 +87,6 @@ namespace DigitalBankApi.Controllers
             if (cliente != null)
                 return Ok(cliente);
             return NotFound("Não existe um cliente cadastrado com esse id.");
-        }
-
-        /// <summary>
-        /// Cadastra um Cliente no banco de dados.
-        /// </summary>
-        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
-        /// <param name="clienteDto"></param>
-        /// <returns>Não tem retorno.</returns>
-        [HttpPost("cadastro_cliente")]
-        public async Task<IActionResult> Add(AddClienteDto clienteDto)
-        {
-            if (string.IsNullOrEmpty(clienteDto.Nome) || string.IsNullOrEmpty(clienteDto.Cpf))
-                return BadRequest("O Nome é invalido.");
-            else if (clienteDto.Idade <= 0)
-                return BadRequest("A idade é invalida,");
-
-            var addCliente = await _clienteService.Add(clienteDto);
-            if (addCliente)
-                return Created("O cliente foi cadastrado.", clienteDto);
-            return BadRequest("Falha ao cadastrar cliente:\n - O cliente não pode ser menor de idade. \n - Esse id já existe. \n - Esse CPF já existe.");
-        }
-
-        /// <summary>
-        /// Atualiza os dados em Cliente.
-        /// </summary>
-        /// <remarks>O Id deve ser positivo diferente de zero. O Nome não deve ser vazio ou nulo.</remarks>
-        /// <param name="id"></param>
-        /// <param name="clienteDto"></param>
-        /// <returns>Não tem retorno.</returns>
-        [HttpPut("atuarliza_perfil_cliente/{id}")]
-        public async Task<IActionResult> Update(int id, UpdateClienteDto clienteDto)
-        {
-            if (id <= 0)
-                return BadRequest("O Id é invalido. Apenas Id's positivos e maiores que zero são validos.");
-            else if (string.IsNullOrEmpty(clienteDto.Nome))
-                return BadRequest("O Nome é invalido.");
-
-            var updateCliente = await _clienteService.Update(id, clienteDto);
-            if (updateCliente)
-                return NoContent();
-            return BadRequest("Falha ao atualizar cliente.");
         }
 
         /// <summary>

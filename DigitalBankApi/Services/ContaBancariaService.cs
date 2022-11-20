@@ -31,9 +31,13 @@ namespace DigitalBankApi.Services
             {
                 var cliente = await _clienteRepository.GetByCpf(cpf);
                 var contaBancaria = await _contaBancariaRepository.GetByClienteId(cliente.IdCliente);
-                if(cliente.IdCliente == contaBancaria.IdCliente)
+                if(contaBancaria != null)
                 {
-                    return contaBancaria;
+                    if (cliente.IdCliente == contaBancaria.IdCliente)
+                    {
+                        return contaBancaria;
+                    }
+                    return null;
                 }
                 return null;
             }

@@ -18,6 +18,30 @@ namespace DigitalBankApi.Controllers
         }
 
         /// <summary>
+        /// Adiciona uma ContaBancaria ao banco de dados.
+        /// </summary>
+        /// <remarks>
+        /// O Id deve ser positivo diferente de zero. 
+        /// O Nome não deve ser vazio ou nulo. 
+        /// O saldo deve ser positivo diferente de zero.
+        /// </remarks>
+        /// <param name="contaBancariaDto"></param>
+        /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
+        [HttpPost("cadastro_conta_bancaria")]
+        public async Task<IActionResult> Add(AddContaBancariaDto contaBancariaDto)
+        {
+            if (contaBancariaDto.IdCliente <= 0)
+                return BadRequest("Cadastro impossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
+            else if (contaBancariaDto.Saldo <= 0)
+                return BadRequest("Cadastro impossibilitado.\nSaldo inválido.\nO saldo inicial da conta deve ser positivo diferente de zero.");
+
+            var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancariaDto);
+            if (contaBancariaIsCreated)
+                return Created("A conta foi cadastrada com sucesso!", contaBancariaDto);
+            return BadRequest("Falha ao cadastrar conta.");
+        }
+
+        /// <summary>
         /// Busca por todos as ContasBancarias cadastradas no banco de dados.
         /// </summary>
         /// <returns>Retorna List(ContaBancaria) caso exista uma ou mais ContaBancaria. Caso contrario retorna Null</returns>
@@ -48,47 +72,9 @@ namespace DigitalBankApi.Controllers
             return NotFound("A conta bancaria vinculada a esse Cpf não existe.");
         }
 
-        /// <summary>
-        /// Adiciona uma ContaBancaria ao banco de dados.
-        /// </summary>
-        /// <remarks>
-        /// O Id deve ser positivo diferente de zero. 
-        /// O Nome não deve ser vazio ou nulo. 
-        /// O saldo deve ser positivo diferente de zero.
-        /// </remarks>
-        /// <param name="contaBancariaDto"></param>
-        /// <returns>Em caso de sucesso retorna um objeto ContaBancaria, caso contrario retorna null.</returns>
-        [HttpPost("cadastro_conta_bancaria")]
-        public async Task<IActionResult> Add(AddContaBancariaDto contaBancariaDto)
-        {
-            if (contaBancariaDto.IdCliente <= 0)
-                return BadRequest("Cadastro impossibilitado.\nO Id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
-            else if (contaBancariaDto.Saldo <= 0)
-                return BadRequest("Cadastro impossibilitado.\nSaldo inválido.\nO saldo inicial da conta deve ser positivo diferente de zero.");
+        
 
-                var contaBancariaIsCreated = await _contaBancariaService.Add(contaBancariaDto);
-            if (contaBancariaIsCreated)
-                return Created("A conta foi cadastrada com sucesso!", contaBancariaDto);
-            return BadRequest("Falha ao cadastrar conta.");
-        }
-
-        /// <summary>
-        /// Apaga uma ContaBancaria de acordo com seu Numero da Conta.
-        /// </summary>
-        /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
-        /// <param name="numeroConta"></param>
-        /// <returns>Não tem retorno.</returns>
-        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{numeroConta}")]
-        public async Task<IActionResult> Delete(int numeroConta)
-        {
-            if (numeroConta <= 0)
-                return BadRequest("Apagamento de conta impossibilitado.\nO id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
-
-            var contaBancariaIsDeleted = await _contaBancariaService.Delete(numeroConta);
-            if (contaBancariaIsDeleted)
-                return Ok();
-            return NotFound("Não existe Conta Bancária com esse número.");
-        }
+        
 
         /// <summary>
         /// Deposita (adiciona) um valor do saldo da ContaBancaria.
@@ -181,6 +167,24 @@ namespace DigitalBankApi.Controllers
             else if (listTransacoes.Count == 0)
                 return NotFound("Esta conta bancaria ainda não realizou nenhuma transação.");
             return Ok(listTransacoes);
+        }
+
+        /// <summary>
+        /// Apaga uma ContaBancaria de acordo com seu Numero da Conta.
+        /// </summary>
+        /// <remarks>O numero da conta deve ser positivo diferente de zero.</remarks>
+        /// <param name="numeroConta"></param>
+        /// <returns>Não tem retorno.</returns>
+        [HttpDelete("apaga_conta_bancaria_por_numero_da_conta/{numeroConta}")]
+        public async Task<IActionResult> Delete(int numeroConta)
+        {
+            if (numeroConta <= 0)
+                return BadRequest("Apagamento de conta impossibilitado.\nO id é inválido.\nApenas Id's positivos e maiores que zero são validos.");
+
+            var contaBancariaIsDeleted = await _contaBancariaService.Delete(numeroConta);
+            if (contaBancariaIsDeleted)
+                return Ok();
+            return NotFound("Não existe Conta Bancária com esse número.");
         }
     }
 }
