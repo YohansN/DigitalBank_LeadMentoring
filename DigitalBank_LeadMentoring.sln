@@ -1,22 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalBankApi", "DigitalBankApi\DigitalBankApi.csproj", "{AF01D8CA-8E19-4929-8BDF-751F311090B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalBankApi", "DigitalBankApi\DigitalBankApi.csproj", "{AF01D8CA-8E19-4929-8BDF-751F311090B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalBankApiTest", "DigitalBankApiTest\DigitalBankApiTest.csproj", "{4D21C909-99F2-4B99-9F26-382F0D2131A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AF01D8CA-8E19-4929-8BDF-751F311090B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AF01D8CA-8E19-4929-8BDF-751F311090B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF01D8CA-8E19-4929-8BDF-751F311090B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF01D8CA-8E19-4929-8BDF-751F311090B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D21C909-99F2-4B99-9F26-382F0D2131A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D21C909-99F2-4B99-9F26-382F0D2131A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D21C909-99F2-4B99-9F26-382F0D2131A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D21C909-99F2-4B99-9F26-382F0D2131A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CEED1BE-8A3A-4A92-8DE5-FD64412B3DE5}
 	EndGlobalSection
 EndGlobal

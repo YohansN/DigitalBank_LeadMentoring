@@ -16,5 +16,7 @@ namespace DigitalBankApi.Models
             Cpf = cpf;
             Idade = idade;
         }
+
+        public Cliente(){}
     }
 }

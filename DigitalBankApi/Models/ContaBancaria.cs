@@ -15,5 +15,7 @@ namespace DigitalBankApi.Models
             IdCliente = idCliente;
             Saldo = saldo;
         }
+
+        public ContaBancaria() { }
     }
 }

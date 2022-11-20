@@ -22,5 +22,7 @@ namespace DigitalBankApi.Models
             DataTransacao = dataTransacao;
         }
 
+        public Transacao() { }
+
     }
 }

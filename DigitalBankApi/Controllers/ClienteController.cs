@@ -2,6 +2,7 @@
 using DigitalBankApi.Models;
 using DigitalBankApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.Threading.Tasks;
 
 namespace DigitalBankApi.Controllers
@@ -56,8 +57,10 @@ namespace DigitalBankApi.Controllers
         [HttpPost("cadastro_cliente")]
         public async Task<IActionResult> Add(AddClienteDto clienteDto)
         {
-            if (string.IsNullOrEmpty(clienteDto.Nome))
+            if (string.IsNullOrEmpty(clienteDto.Nome) || string.IsNullOrEmpty(clienteDto.Cpf))
                 return BadRequest("O Nome é invalido.");
+            else if (clienteDto.Idade <= 0)
+                return BadRequest("A idade é invalida,");
 
             var addCliente = await _clienteService.Add(clienteDto);
             if (addCliente)
